@@ -1,9 +1,9 @@
-#include "kinematics.h"
+#include "InvertKinematics.h"
 
 int main(){
 	std::vector<float> target;
 	float angle[14];
-	kinematics kine;
+	InvertKinematics kine;
 
 	if(kine.readLinkFile("linkPara.txt"))	return 1;
 	int frame = kine.readInitAngleFile("initAngles.txt");
