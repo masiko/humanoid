@@ -10,7 +10,7 @@ int main(){
 	if(!frame)	return 1;
 	if(kine.setLegTrajectory("trajectory.txt", target))	return 1;
 	
-	for(int i=0; i<target.size()/6; i++) {
+	for(int i=0; i<target.size()/8; i++) {
 		kine.getMotion(target, i, angle);
 		kine.logJointAngle(angle);
 	}

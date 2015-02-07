@@ -96,7 +96,7 @@ int InvertKinematics::logMatrix(float angles[16]) {
 }
 
 int InvertKinematics::logPosition(float pos1[16]) {
-	float ty = asin(-pos1[8]);
+	float ty = asin(-pos1[2]);
 	float tx = asin(pos1[9]/cos(ty));
 	float tz = 0;
 	fprintf(fp_P, "%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",pos1[3], pos1[7], pos1[11], tx, ty, tz);
@@ -140,12 +140,12 @@ int InvertKinematics::readInitAngleFile(char fname[]) {
 
 int InvertKinematics::setLegTrajectory(char *fname ,std::vector<float> &traj){
 	FILE *fp = fopen(fname,"r");
-	float pos[6];
+	float pos[8];
 	if(fp==NULL)	return 1;
 	while(1)
 	{
-		if(fscanf(fp, "%f,%f,%f,%f,%f,%f", &pos[0], &pos[1], &pos[2], &pos[3], &pos[4], &pos[5]) == EOF)	break;
-		for (int i=0; i<6; i++)	traj.push_back(pos[i]);
+		if(fscanf(fp, "%f,%f,%f,%f,%f,%f,%f,%f", &pos[0], &pos[1], &pos[2], &pos[3], &pos[4], &pos[5], &pos[6], &pos[7]) == EOF)	break;
+		for (int i=0; i<8; i++)		traj.push_back(pos[i]);
 	}
 	fclose(fp);
 	return 0;
@@ -221,21 +221,28 @@ int InvertKinematics::getMotion(std::vector<float> &tar, unsigned int frame, flo
 	}
 	
 	//No.1, No.7 <=> contact point
-	tar[2+6*frame] -= quat[0][11];
-	tar[5+6*frame] -= quat[7][11];
+	tar[2+8*frame] -= quat[0][11];
+	tar[6+8*frame] -= quat[7][11];
 	
 	for (int i=0; i<2; i++) {
 		std::cout<<"start: "<<i<<"\n";
+		//Turn Y_joint and target
+		tarTheta[2] = tar[3+i*4+8*frame];
+		angles[6+i*linknum2] = tarTheta[2]*180/M_PI;
+		tar[0+i*4+8*frame] = cos(-tarTheta[2])*(tar[0+i*4+8*frame]-link[6+i*linknum2][3]) - sin(-tarTheta[2])*(tar[1+i*4+8*frame]-link[6+i*linknum2][4]) + link[6+i*linknum2][3];
+		tar[1+i*4+8*frame] = sin(-tarTheta[2])*(tar[0+i*4+8*frame]-link[6+i*linknum2][3]) + cos(-tarTheta[2])*(tar[1+i*4+8*frame]-link[6+i*linknum2][4]) + link[6+i*linknum2][4];
+		printf("%.2f, %.2f\n", tar[0+i*4+8*frame], tar[1+i*4+8*frame]);		
+				
 		culMatrix(quat[6+i*linknum2 ], quat[5+i*linknum2 ]);
 		//No.5 -> target	
-		tarLength = (tar[0+i*3+6*frame]-quat[5+i*linknum2][3])*(tar[0+i*3+6*frame]-quat[5+i*linknum2][3])
-			 	+ (tar[1+i*3+6*frame]-quat[5+i*linknum2][7])*(tar[1+i*3+6*frame]-quat[5+i*linknum2][7])
-			  	+ (tar[2+i*3+6*frame]-quat[5+i*linknum2][11])*(tar[2+i*3+6*frame]-quat[5+i*linknum2][11]);
+		tarLength = (tar[0+i*4+8*frame]-quat[5+i*linknum2][3])*(tar[0+i*4+8*frame]-quat[5+i*linknum2][3])
+			 	+ (tar[1+i*4+8*frame]-quat[5+i*linknum2][7])*(tar[1+i*4+8*frame]-quat[5+i*linknum2][7])
+			  	+ (tar[2+i*4+8*frame]-quat[5+i*linknum2][11])*(tar[2+i*4+8*frame]-quat[5+i*linknum2][11]);
 		tarLength = sqrt(tarLength);
 		
 		//x-z plane
-		if(tar[0+i*3+6*frame]-quat[5+i*linknum2][3] != 0.0)	
-				tarTheta[1] = -M_PI/2 -atan2(tar[2+i*3+6*frame]-quat[5+i*linknum2][11], tar[0+i*3+6*frame]-quat[5+i*linknum2][3]);
+		if(tar[0+i*4+6*frame]-quat[5+i*linknum2][3] != 0.0)	
+				tarTheta[1] = -M_PI/2 -atan2(tar[2+i*4+8*frame]-quat[5+i*linknum2][11], tar[0+i*4+8*frame]-quat[5+i*linknum2][3]);
 		else	tarTheta[1] = 0;
 		
 		std::cout<<"/"<<tarLength<<","<<tarTheta[1]<<"\n";
@@ -245,8 +252,8 @@ int InvertKinematics::getMotion(std::vector<float> &tar, unsigned int frame, flo
 		angles[4+i*linknum2] = tarTheta[1]*180/M_PI - angles[3+i*linknum2]/2;
 		
 		//y-z plane
-		if(tar[1+i*3+6*frame]-quat[5+i*linknum2][7] != 0.0)
-				tarTheta[0] = M_PI/2 + atan2(tar[2+i*3+6*frame]-quat[5+i*linknum2][11], tar[1+i*3+6*frame]-quat[5+i*linknum2][7]);
+		if(tar[1+i*4+6*frame]-quat[5+i*linknum2][7] != 0.0)
+				tarTheta[0] = M_PI/2 + atan2(tar[2+i*4+8*frame]-quat[5+i*linknum2][11], tar[1+i*4+8*frame]-quat[5+i*linknum2][7]);
 		else	tarTheta[0] = 0.0;
 		angles[5+i*linknum2] = tarTheta[0]*180/M_PI;
 		angles[1+i*linknum2] = -angles[5+i*linknum2];
@@ -260,7 +267,7 @@ int InvertKinematics::getMotion(std::vector<float> &tar, unsigned int frame, flo
 	
 	for(int i=0; i<LinkNum; i++){
 		if(i<6)			angles[i] = angles[i+1];
-		else if(i<11)	angles[i] = angles[i+2];
+		else if(i<12)	angles[i] = angles[i+2];
 		else			angles[i] = 0;
 	}
 	return 0;
