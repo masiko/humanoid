@@ -240,7 +240,7 @@ int InvertKinematics::getMotion(std::vector<float> &tar, unsigned int frame, flo
 		
 		std::cout<<"/"<<tarLength<<","<<tarTheta[1]<<"\n";
 
-		angles[3+i*linknum2] = -2*acos((float)tarLength/(120))*180/M_PI;
+		angles[3+i*linknum2] = -2*acos((float)tarLength/(fabs(link[2+i*linknum2][5] + link[3+i*linknum2][5])))*180/M_PI;
 		angles[2+i*linknum2] = -tarTheta[1]*180/M_PI - angles[3+i*linknum2]/2;
 		angles[4+i*linknum2] = tarTheta[1]*180/M_PI - angles[3+i*linknum2]/2;
 		
@@ -251,8 +251,8 @@ int InvertKinematics::getMotion(std::vector<float> &tar, unsigned int frame, flo
 		angles[5+i*linknum2] = tarTheta[0]*180/M_PI;
 		angles[1+i*linknum2] = -angles[5+i*linknum2];
 				
-		for (int j=0; j<LinkNum; j++) 		setMatrix(angles[j],link[j], quat[j]);
-		for (int j=linknum2-1; j>0; j--)	culMatrix(quat[j+i*linknum2], quat[j-1+i*linknum2]);
+		for (int j=0; j<LinkNum; j++) 		setMatrix(angles[j],link[j],quat[j]);
+		for (int j=linknum2-1; j>0; j--) 	culMatrix(quat[j+i*linknum2], quat[j-1+i*linknum2]);
 	
 		logMatrix(quat[0+i*linknum2]);
 		logPosition(quat[0+i*linknum2]);

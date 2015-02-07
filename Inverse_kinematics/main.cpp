@@ -1,8 +1,8 @@
 #include "InvertKinematics.h"
 
 int main(){
-	std::vector<float> target;
-	float angle[14];
+	std::vector<float> target;	//foot trajectory: [lx,ly,lz,rx,ry,rz] x n(step)
+	float angle[14];			//joint angles: 
 	InvertKinematics kine;
 
 	if(kine.readLinkFile("linkPara.txt"))	return 1;
