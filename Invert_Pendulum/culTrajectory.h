@@ -122,8 +122,8 @@ int culTrajectory::cul_Lpoint_fb(int num, double vx, double vy,
 	
 	printf("culTrajectory::cul_Lpoint_fb\n");
 
-	*lx = posx0 + Tc*(S*S+C)*velx0/(C*S) - Tc/(C*S)*vx;
-	*ly = posy0 + Tc*(S*S+C)*vely0/(C*S) - Tc/(C*S)*vy*num;
+	*lx = posx0 + Tc*(C)*velx0/(S) - Tc/(S)*vx;
+	*ly = posy0 + Tc*(C)*vely0/(S) - Tc/(S)*vy*num;
 
 	return 0;
 }
