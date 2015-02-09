@@ -23,6 +23,9 @@ public:
 	int cul_Lpoint(int num, int stepx, int stepy,
 		double posx0, double posy0, double velx0, double vely0,
 		double lx0, double ly0, double* lx, double* ly);
+	int cul_Lpoint_fb(int num, double vx, double vy,
+		double posx0, double posy0, double velx0, double vely0,
+		double lx0, double ly0, double* lx, double* ly);
 };
 
 
@@ -85,7 +88,7 @@ int culTrajectory::cul_motion(int stepx, int stepy,
 int culTrajectory::cul_Lpoint(int num, int stepx, int stepy,
 		double posx0, double posy0, double velx0, double vely0,
 		double lx0, double ly0, double* lx, double* ly) {
-	const int a = 200;
+	const int a = 10;
 	const int b = 1;
 	double C,S,D;
 	double freq = walk_cycle/Tc;
@@ -94,8 +97,8 @@ int culTrajectory::cul_Lpoint(int num, int stepx, int stepy,
 	num = num%2 ? 1 : -1;
 	double lx1 = lx0 + stepx;
 	double ly1 = ly0 - (num)*stepy;
-	double ex = lx1 + stepx/2;
-	double ey = ly1 + (num)*stepy/2;
+	double ex = (posx0-lx1)*C + Tc*velx0*S + lx1;
+	double ey = (posx0-ly1)*C + Tc*vely0*S + ly1;
 	double evx = (ex-lx1)*S/Tc + velx0*C;
 	double evy = (ey-ly1)*S/Tc + vely0*C;
 	
@@ -104,6 +107,23 @@ int culTrajectory::cul_Lpoint(int num, int stepx, int stepy,
 
 	*lx = -a*(C-1.0)*(ex-C*posx0-Tc*S*velx0)/D - b*S*(evx-posx0*S/Tc-C*velx0)/(Tc*D);
 	*ly = -a*(C-1.0)*(ey-C*posy0-Tc*S*vely0)/D - b*S*(evy-posy0*S/Tc-C*vely0)/(Tc*D);
+
+	return 0;
+}
+
+int culTrajectory::cul_Lpoint_fb(int num, double vx, double vy,
+		double posx0, double posy0, double velx0, double vely0,
+		double lx0, double ly0, double* lx, double* ly) {
+	double C,S;
+	double freq = walk_cycle/Tc;
+	C = cosh(freq);
+	S = sinh(freq);
+	num = num%2 ? 1 : -1;
+	
+	printf("culTrajectory::cul_Lpoint_fb\n");
+
+	*lx = posx0 + Tc*(S*S+C)*velx0/(C*S) - Tc/(C*S)*vx;
+	*ly = posy0 + Tc*(S*S+C)*vely0/(C*S) - Tc/(C*S)*vy*num;
 
 	return 0;
 }
