@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <math.h>
-#include <vector.h>
+#include <vector>
 #include <string.h>
 
 class InvertKinematics
@@ -12,8 +12,8 @@ private:
 	unsigned int LinkNum;
 	float Link[84];
 	std::vector<float> InitAngle;
-	setfp(char* fname_M, char* fname_P, char* fname_A);
-	closefp();
+	int setfp(char* fname_M, char* fname_P, char* fname_A);
+	int closefp();
 public:
 	InvertKinematics();
 	~InvertKinematics();
