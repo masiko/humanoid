@@ -2,6 +2,8 @@
 DigitalOut L(LED3);
 
 int main(){
+	int ang1 = 1500;
+	int da = 30, a = 30;
 	L = 1;
     ServoControl s9(p9);
     ServoControl s10(p10);
@@ -17,36 +19,24 @@ int main(){
     ServoControl s20(p20);
 	wait(1);
     while(1){
-		s9.setPos(1400);
-		s10.setPos(1400);
-		s11.setPos(1400);
-		s12.setPos(1400);
-		s13.setPos(1400);
-		s14.setPos(1400);
-		s15.setPos(1400);
-		s16.setPos(1400);
-		s17.setPos(1400);
-		s18.setPos(1400);
-		s19.setPos(1400);
-		s20.setPos(1400);
-//		wait(0.025);
-		wait_ms(5);
-		L = 0;
-		s9.setPos(1600);
-		s10.setPos(1600);
-		s11.setPos(1600);
-		s12.setPos(1600);
-		s13.setPos(1600);
-		s14.setPos(1600);
-		s15.setPos(1600);
-		s16.setPos(1600);
-		s17.setPos(1600);
-		s18.setPos(1600);
-		s19.setPos(1600);
-		s20.setPos(1600);
-//		wait(0.025);
-		wait_ms(5);
-		L = 1;
+		if (ang1 >= 1650)	da = -a;
+		else if (ang1 <=1350)	da = a;
+		ang1 += da;
+
+		s9.setPos(ang1);
+		s10.setPos(ang1);
+		s11.setPos(ang1);
+		s12.setPos(ang1);
+		s13.setPos(ang1);
+		s14.setPos(ang1);
+		s15.setPos(ang1);
+		s16.setPos(ang1*2);
+		s17.setPos(ang1);
+		s18.setPos(ang1);
+		s19.setPos(ang1);
+		s20.setPos(ang1);
+		wait_ms(20);
+		L = L ? 0 : 1;
     }
     return 0;
 }
