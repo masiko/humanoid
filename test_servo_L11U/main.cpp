@@ -19,8 +19,8 @@ int main(){
     ServoControl s20(p20);
 	wait(1);
     while(1){
-		if (ang1 >= 1650)	da = -a;
-		else if (ang1 <=1350)	da = a;
+		if (ang1 >= 1850)	da = -a;
+		else if (ang1 <=1250)	da = a;
 		ang1 += da;
 
 		s9.setPos(ang1);
