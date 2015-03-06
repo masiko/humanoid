@@ -14,23 +14,20 @@ public:
 	~culTrajectory();
 	int set_cycl(double f);
 	int set_cogz(double z);
-	int cul_LIP_motion(int stepx, int stepy, 
-		double posx0, double posy0, double velx0, double vely0, double lx, double ly,  
+	int cul_LIP_Physics(double posx0, double posy0,
+		double velx0, double vely0, double lx, double ly,  
 		double* posx, double* posy, double* velx, double* vely);
-	int cul_motion(int stepx, int stepy, 
-		double posx0, double posy0, double velx0, double vely0, double lx, double ly,  
+	int cul_Physics(double posx0, double posy0,
+		double velx0, double vely0, double lx, double ly,  
 		double* posx, double* posy, double* velx, double* vely);
-	int cul_Lpoint(int num, int stepx, int stepy,
-		double posx0, double posy0, double velx0, double vely0,
-		double lx0, double ly0, double* lx, double* ly);
-	int cul_Lpoint_fb(int num, double vx, double vy,
+	int cul_Lpoint(int num, double vx, double vy,
 		double posx0, double posy0, double velx0, double vely0,
 		double lx0, double ly0, double* lx, double* ly);
 };
 
 
 
-
+/*
 
 culTrajectory::culTrajectory(): G(9807),  walk_cycle(0.2), cog_z(180) {
 	Tc = sqrt(cog_z/G);
@@ -127,3 +124,5 @@ int culTrajectory::cul_Lpoint_fb(int num, double vx, double vy,
 
 	return 0;
 }
+*/
+
