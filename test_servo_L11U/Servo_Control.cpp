@@ -3,12 +3,26 @@
 ServoControl::ServoControl(PinName pin) : _pin(pin) {
     pos = 1500;
     width = 0.02;
-    tic.attach(this, &ServoControl::setPulse, width);
+	power = 0;
+//    tic.attach(this, &ServoControl::setPulse, width);
+}
+
+ServoControl::ServoControl(PinName pin, int init_ang) : _pin(pin) {
+    pos = init_ang;
+    width = 0.02;
+	power = 0;
+//    tic.attach(this, &ServoControl::setPulse, width);
 }
 
 ServoControl::~ServoControl(){};
 
-int ServoControl::setPos(int input){
+int ServoControl::setPower(int sw) {
+	if (!power && sw)	power = 1, tic.attach(this, &ServoControl::setPulse, width);
+	else if (power && !sw)	power = 0, tic.detach();
+	return 0;
+}
+
+int ServoControl::setPos(int input) {
     if (input<900 || 2100<input)    return 1;
     pos = input;
     return 0;
