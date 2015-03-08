@@ -23,7 +23,7 @@ int ServoControl::setPower(int sw) {
 }
 
 int ServoControl::setPos(int input) {
-    if (input<900 || 2100<input)    return 1;
+    if (input<700 || 2300<input)    return 1;
     pos = input;
     return 0;
 }
