@@ -84,6 +84,39 @@ int motion_interpolation(std::vector<ServoControl>& s,std::vector<int>& motion, 
 	return 0;
 }
 
+int motion_interpolation_infinit(std::vector<ServoControl>& s,std::vector<int>& motion, int offset[DOF], int dor[DOF], int ct) {
+	//ct[ms]
+	int fnum = motion.size()/13;
+	int cnum;
+	int dang[DOF];
+
+	for (int i=1; i<fnum; i++) {
+		cnum = motion[13*i+12]/ct;
+		if(!cnum)	return 1;
+		for (int j=0; j<DOF; j++)	dang[j] = (motion[13*i+j] - motion[13*(i-1)+j])/cnum;
+		for (int j=1; j<=cnum; j++) {
+			for (int k=0; k<DOF; k++) {
+				s[k].setPos(offset[k] + dor[k]*(motion[13*(i-1)+k] + dang[k]*j));
+			}
+			wait_ms(ct);
+		}
+	}
+	while(1) {
+		for (int i=4; i<fnum; i++) {
+			cnum = motion[13*i+12]/ct;
+			if(!cnum)	return 1;
+			for (int j=0; j<DOF; j++)	dang[j] = (motion[13*i+j] - motion[13*(i-1)+j])/cnum;
+			for (int j=1; j<=cnum; j++) {
+				for (int k=0; k<DOF; k++) {
+					s[k].setPos(offset[k] + dor[k]*(motion[13*(i-1)+k] + dang[k]*j));
+				}
+				wait_ms(ct);
+			}
+		}
+	}
+	return 0;
+}
+
 int main() {
 	int offset[DOF];
 	int dor[DOF];
@@ -112,7 +145,9 @@ int main() {
 	if (readMotion(fname, &motionframe))	return 1;
 //	int fnum = motionframe.size()/13;
 
-	motion_interpolation(s,motionframe,offset,dor,50);
+//	motion_interpolation(s,motionframe,offset,dor,50);
+
+	motion_interpolation_infinit(s,motionframe, offset, dor, 20);
 
 /*
 	L=1;
