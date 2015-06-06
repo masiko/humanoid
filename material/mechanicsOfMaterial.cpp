@@ -48,3 +48,4 @@ int main(){
 	gets(c);
 	return 0;
 }
+

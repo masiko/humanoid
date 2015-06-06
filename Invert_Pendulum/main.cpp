@@ -43,9 +43,9 @@ int main() {
 
 		fprintf(lp,"f:%.4lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf\n", posx1, posy1, lx1, ly1, velx1, vely1);
 		if (i%2) {//+ left leg
-			fprintf(tp,"%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f\n",lx1-posx1,ly1-posy1,posz,ther,lx-posx1,ly-posx1,posz,thel);
+			fprintf(tp,"%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f\n",lx-posx1,ly-posy,-posz,ther,lx1-posx1,ly1-posy1,-posz,thel);
 		} else {//- right leg
-			fprintf(tp,"%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f\n",lx-posx1,ly-posy1,posz,ther,lx1-posx1,ly1-posx1,posz,thel);
+			fprintf(tp,"%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f,%.0f\n",lx1-posx1,ly1-posy1,-posz,ther,lx-posx1,ly-posy1,-posz,thel);
 		}
 		posx = posx1;
 		posy = posy1;

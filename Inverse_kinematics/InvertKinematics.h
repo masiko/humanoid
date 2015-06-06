@@ -104,7 +104,7 @@ int InvertKinematics::logPosition(float pos1[16]) {
 }
 
 int InvertKinematics::logJointAngle(float ang[14]){
-	for (int i=0; i<14; i++) fprintf(fp_A, "%.3f,",ang[i]);
+	for (int i=0; i<12; i++) fprintf(fp_A, "%.0f,",ang[i]);
 	fprintf(fp_A, "\n");
 	return 0;
 }
@@ -221,7 +221,9 @@ int InvertKinematics::getMotion(std::vector<float> &tar, unsigned int frame, flo
 	}
 	
 	//No.1, No.7 <=> contact point
-	tar[2+8*frame] -= quat[0][11];
+	tar[1+8*frame] -= quat[0][7];	//y offset
+	tar[5+8*frame] -= quat[7][7];
+	tar[2+8*frame] -= quat[0][11];	//z offset
 	tar[6+8*frame] -= quat[7][11];
 	
 	for (int i=0; i<2; i++) {
